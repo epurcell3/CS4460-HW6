@@ -4,13 +4,25 @@
         <title>Tour De France Visualization</title>
         
         <link rel="stylesheet" style="text/css" href="hw6.css">
-		<link rel="text/javascript" href="hw6.js">
+	<link rel="text/javascript" href="hw6.js">
 		
         <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     </head>
     <body>
-        <script type="text/javascript">
-           //d3.select("body").append("p").text("Testing!");
-        </script>
+	<div>
+	    <svg height="512" width="1024"></svg>
+	</div>
+	<script>
+	   //WRITE SCRIPT HERE...for some reason when I tried linking the hw6.js it doesn't all get executed
+           //the variables get stored (I deleted the content in there), but the functions don't do anything
+           //in the meantime, we can write script here
+	    var data;
+	    d3.json("hw6_data.json", function(error, json) {
+  	        if (error) { 
+  	            return console.warn(error);
+       	        }
+  		data = json;
+	    });
+       	</script>
     </body>
 </html> 
