@@ -29,18 +29,22 @@ function generateSpeedGraph(){
         .data(dataset)
         .enter()
         .append("circle");
-        // Only plot points that have data for speed
-        if (function(d){return d.average_speed;} != "0"){
-            circles.attr("cx", function(d, i) {
-            return (i * 12.5) + 25;
-            })
-            .attr("cy", function(d) {
+
+    // Only plot points that have data for speed should be visible
+    circles.attr("cx", function(d, i) {
+        return (i * 12.5) + 25;
+        })
+        .attr("cy", function(d) {
+            if (d.average_speed != "0"){
                 var circleHeight = d.average_speed * 5;
                 return height - circleHeight;
-            })
-            .attr("r", radius);
+            }
+            else{
+                return -10;
+            }
 
-        }
+        })
+        .attr("r", radius);
 }
 
 
