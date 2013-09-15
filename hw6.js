@@ -11,7 +11,7 @@ var radius = 3;
 // Scale used to increase the height of the data points
 var scale = 5;
 
-d3.csv("tour_de_france.csv", function(error, data) {
+d3.csv("hw6_data.csv", function(error, data) {
     if (error) {
         console.log(error);
     }
