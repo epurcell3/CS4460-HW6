@@ -15,6 +15,9 @@ var scaleX = 12.5;
 var scaleY = 5;
 var offset = 25;
 
+// Coordinate used to hide points/lines that don't need to be seen
+var hiddenCoordinate = -10;
+
 var color = "rgb(19,117,255)";
 
 
@@ -37,6 +40,49 @@ function generateSpeedGraph(){
         .attr("width", width)
         .attr("height", height);
 
+    var lines = svg.selectAll("line")
+        .data(dataset)
+        .enter()
+        .append("line");
+
+
+    lines.attr("x1", function(d, i) {
+        if (i < dataset.length - 1){
+            if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
+                return (i * scaleX) + offset;
+            }
+        }
+        return hiddenCoordinate;
+    })
+        .attr("y1", function(d, i) {
+            if (i < dataset.length - 1){
+                if (d.average_speed != "0" && d.average_speed != "0"){
+                    var y1 = d.average_speed * scaleY;
+                    return height - y1;
+                }
+            }
+            return hiddenCoordinate;
+        })
+        .attr("x2", function(d, i){
+            if (i < dataset.length - 1) {
+                if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
+                    return ((i + 1) * scaleX + offset);
+                }
+            }
+            return hiddenCoordinate;
+        })
+        .attr("y2", function(d, i){
+            if (i < dataset.length - 1) {
+                if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
+                    var y2 = dataset[i + 1].average_speed * scaleY;
+                    return height - y2;
+                }
+            }
+            return hiddenCoordinate;
+        })
+        .attr("stroke", color);
+
+
     var circles = svg.selectAll("circle")
         .data(dataset)
         .enter()
@@ -52,7 +98,7 @@ function generateSpeedGraph(){
                 return height - circleHeight;
             }
             else{
-                return -10;
+                return hiddenCoordinate;
             }
 
         })
@@ -70,50 +116,6 @@ function generateSpeedGraph(){
                 .duration(300)
                 .attr("fill", color);
     });
-
-
-    var currX;
-    var lines = svg.selectAll("line")
-        .data(dataset)
-        .enter()
-        .append("line");
-
-
-    lines.attr("x1", function(d, i) {
-            if (i < dataset.length - 1){
-                if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
-                    return (i * scaleX) + offset;
-                }
-            }
-            return -10;
-        })
-        .attr("y1", function(d, i) {
-            if (i < dataset.length - 1){
-                if (d.average_speed != "0" && d.average_speed != "0"){
-                    var y1 = d.average_speed * scaleY;
-                    return height - y1;
-                }
-            }
-            return -10;
-        })
-        .attr("x2", function(d, i){
-            if (i < dataset.length - 1) {
-                if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
-                   return ((i + 1) * scaleX + offset);
-                }
-            }
-            return -10;
-        })
-        .attr("y2", function(d, i){
-            if (i < dataset.length - 1) {
-                if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
-                    var y2 = dataset[i + 1].average_speed * scaleY;
-                    return height - y2;
-                }
-            }
-            return -10;
-        })
-        .attr("stroke", color);
 }
 
 
