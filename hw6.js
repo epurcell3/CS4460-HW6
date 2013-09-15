@@ -8,8 +8,16 @@ var height = 512;
 // Radius of the data points
 var radius = 3;
 
+// Scale used to increase the space between data points
+var scaleX = 12.5;
+
 // Scale used to increase the height of the data points
-var scale = 5;
+var scaleY = 5;
+var offset = 25;
+
+var color = "rgb(19,117,255)";
+
+
 
 d3.csv("hw6_data.csv", function(error, data) {
     if (error) {
@@ -36,11 +44,11 @@ function generateSpeedGraph(){
 
     // Only plot points that have data for speed should be visible
     circles.attr("cx", function(d, i) {
-        return (i * 12.5) + 25;
+        return (i * scaleX) + offset;
         })
         .attr("cy", function(d) {
             if (d.average_speed != "0"){
-                var circleHeight = d.average_speed * scale;
+                var circleHeight = d.average_speed * scaleY;
                 return height - circleHeight;
             }
             else{
@@ -50,7 +58,7 @@ function generateSpeedGraph(){
         })
         .attr("r", radius)
         .attr("fill", function(d) {
-            return "rgb(19,117,255)";
+            return color;
         })
         .on("mouseover", function() {
             d3.select(this)
@@ -60,13 +68,52 @@ function generateSpeedGraph(){
             d3.select(this)
                 .transition()
                 .duration(300)
-                .attr("fill", "rgb(19,117,255)");
+                .attr("fill", color);
     });
 
 
+    var currX;
+    var lines = svg.selectAll("line")
+        .data(dataset)
+        .enter()
+        .append("line");
 
-    //var lines = svg.selectAll("line")
 
+    lines.attr("x1", function(d, i) {
+            if (i < dataset.length - 1){
+                if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
+                    return (i * scaleX) + offset;
+                }
+            }
+            return -10;
+        })
+        .attr("y1", function(d, i) {
+            if (i < dataset.length - 1){
+                if (d.average_speed != "0" && d.average_speed != "0"){
+                    var y1 = d.average_speed * scaleY;
+                    return height - y1;
+                }
+            }
+            return -10;
+        })
+        .attr("x2", function(d, i){
+            if (i < dataset.length - 1) {
+                if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
+                   return ((i + 1) * scaleX + offset);
+                }
+            }
+            return -10;
+        })
+        .attr("y2", function(d, i){
+            if (i < dataset.length - 1) {
+                if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
+                    var y2 = dataset[i + 1].average_speed * scaleY;
+                    return height - y2;
+                }
+            }
+            return -10;
+        })
+        .attr("stroke", color);
 }
 
 
