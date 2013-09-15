@@ -6,7 +6,7 @@ var width = 1400;
 var height = 512;
 
 // Radius of the data points
-var radius = 2;
+var radius = 3;
 
 d3.csv("tour_de_france.csv", function(error, data) {
     if (error) {
@@ -29,15 +29,18 @@ function generateSpeedGraph(){
         .data(dataset)
         .enter()
         .append("circle");
+        // Only plot points that have data for speed
+        if (function(d, i){return d.average_speed;} != "0"){
+            circles.attr("cx", function(d, i) {
+            return (i * 12.5) + 25;
+            })
+            .attr("cy", function(d, i) {
+                var circleHeight = d.average_speed * 5;
+                return height - circleHeight;
+            })
+            .attr("r", radius);
 
-    circles.attr("cx", function(d, i) {
-        return (i * 12.5) + 25;
-    })
-        .attr("cy", function(d, i) {
-            return height - d.average_speed;
-        })
-        .attr("r", radius)
-        .attr("fill", "blue");
+        }
 }
 
 
