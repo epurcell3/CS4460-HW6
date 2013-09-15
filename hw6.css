@@ -3,10 +3,3 @@ svg {
     border-width: 3px;
 }
 
-circle {
-    fill: #1375ff;
-}
-
-circle:hover {
-    fill: orange;
-}
