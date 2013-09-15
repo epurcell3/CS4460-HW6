@@ -30,11 +30,11 @@ function generateSpeedGraph(){
         .enter()
         .append("circle");
         // Only plot points that have data for speed
-        if (function(d, i){return d.average_speed;} != "0"){
+        if (function(d){return d.average_speed;} != "0"){
             circles.attr("cx", function(d, i) {
             return (i * 12.5) + 25;
             })
-            .attr("cy", function(d, i) {
+            .attr("cy", function(d) {
                 var circleHeight = d.average_speed * 5;
                 return height - circleHeight;
             })
