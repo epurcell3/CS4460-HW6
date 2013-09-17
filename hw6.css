@@ -14,3 +14,81 @@ svg {
     font-family: sans-serif;
     font-size: 11px;
 }
+
+line {
+    stroke-width: 2px;
+}
+
+#buttons {
+    right: 50px;
+    position: absolute;
+}
+
+button{
+    background-color: #222222;
+    /*border-image: none;
+    border-radius: 0 0 0 0;
+    border-style: none none solid;
+    border-width: 0 0 1px; */
+    border-width: 1px;
+    border-color: #cccccc;
+    color: #ffffff;
+    font-family: Helvetica;
+    font-size: 14px;
+    margin: 0 -3px;
+    padding: 6px 10px;
+    text-rendering: optimizelegibility;
+    /*text-shadow: 0 -1px 1px #222222; */
+}
+
+button.active {
+    background-color: #e8a804;
+}
+
+button:hover {
+    background-color: #ffaa04;
+}
+
+button.left {
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+button.right {
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+div {
+    font-family: Helvetica;
+    font-size: 14px;
+    color: #692b18;
+}
+
+#table_container {
+    margin-left: 500px;
+    margin-top: 50px;
+    width: 300px;
+    height: 250px;
+    position: absolute;
+}
+
+table {
+    border-collapse:collapse;
+}
+
+table, td, th {
+    padding: 2px 4px;
+    border: 1px solid #692b18;
+}
+
+th {
+    background-color: #ffd060;
+    font-weight: bold;
+    font-family: Helvetica;
+}
+
+td {
+    background-color: rgba(255, 208, 96, 0.21);
+    text-align:center;
+}
