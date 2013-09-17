@@ -51,7 +51,7 @@ button{
     /*text-shadow: 0 -1px 1px #222222; */
 }
 
-.button:active {
+.active {
     background-color: #e8a804;
 }
 
@@ -59,12 +59,12 @@ button:hover {
     background-color: #ffaa04;
 }
 
-button.left {
+#left {
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
 }
 
-button.right {
+#right {
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;
 }
