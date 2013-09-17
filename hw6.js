@@ -190,16 +190,8 @@ function generateGraph(x_axes, y_axes, data) {
         })
         .append("title")
         .text(function(d) {
-            if (indCurrValue == 2){
-                text = "\nAverage Speed: " + d.average_speed + " km/h";
-            }
-            else if (indCurrValue == 1){
-                text = "\nDistance: " + d.distance + " km";
-            }
-            else{
-                text = "\nNumber of Stages: " + d.stages;
-            }
-            return "Year: " + d.year + text;
+            return "Year: " + d.year + "\nAverage Speed: " + d.average_speed + " km/h" +
+                "\nDistance: " + d.distance + " km" + "\nNumber of Stages: " + d.stages;
         });
 }
 
