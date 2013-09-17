@@ -5,17 +5,18 @@
     <title>Tour De France Visualization</title>
     <link rel="stylesheet" type="text/css" href="hw_6.css">
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script type="text/javascript" src="hw_6.js"></script>
+    <script type="text/javascript" src=""d3_visualization"hw_6.js"></script>
 </head>
 <body>
 <p>Tour de France (1903-2010)</p>
 <span id="buttons">
     <span id="mode">
-        <button class="left"  value="Speeds" onclick="changeMode(this.value)">Average Speeds</button>
-        <button class="middle"  value="Distances" onclick="changeMode(this.value)">Distances</button>
-        <button class="right"  value="Stages" onclick="changeMode(this.value)">Stages</button>
+        <button id="left"  value="Speeds" onclick="changeMode(this.value)" class="active">Average Speeds</button>
+        <button id="middle"  value="Distances" onclick="changeMode(this.value)">Distances</button>
+        <button id="right"  value="Stages" onclick="changeMode(this.value)">Stages</button>
     </span>
 </span>
 <div id="table_container"></div>
+
 </body>
 </html>
