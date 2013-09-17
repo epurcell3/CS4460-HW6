@@ -8,12 +8,6 @@ var height = 512;
 // Radius of the data points
 var radius = 3;
 
-// Scale used to increase the space between data points
-var scaleX = 12.5;
-
-// Scale used to increase the height of the data points
-var scaleY = 5;
-
 // Offset used to space out components
 var offset = 25;
 
@@ -23,8 +17,9 @@ var hiddenCoordinate = -10;
 // Blue color for the svg lines and circles
 var color = "rgb(19,117,255)";
 
+// Indicates the graph's current mode (e.g., stages, distance, or average speed)
 var indCurrValue = 2;
-var yValues = ["stages", "distance", "average_speed"]
+var yValues = ["stages", "distance", "average_speed"];
 
 // Flag keeps track of whether or not table is displayed
 var isDisplayed = false;
@@ -32,35 +27,25 @@ var isDisplayed = false;
 // Table used to display Tour de France winners
 var table;
 
+var svg;
 
-d3.csv("hw6_data.csv", function(error, data) {
-    if (error) {
-        console.log(error);
-    }
-    else{
-        console.log(data);  //DEBUG: delete this later...
-        dataset = data;
-        var x_axes = [1903, 2010];
-        var y_axes = [30, 0];
-        var d = [4, 5];
+start();
 
-        generateGraph(x_axes, y_axes, d);
-        //generateSpeedGraph();
-    }
-});
+function generateGraph(x_axes, y_axes, data) {
+    svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
 
-function generateGraph(x_axes, y_axes, data)
-{
-    var svg = d3.select("svg");
     var xscale = d3.scale.linear()
         .domain(x_axes)
         .range([50, width-50]);
     var m = d3.max(dataset, function(d) {
-        return parseInt(d[yValues[indCurrValue]]);
-    });
+            return parseInt(d[yValues[indCurrValue]]);
+        });
     var yscale = d3.scale.linear()
         .domain([d3.max(dataset, function(d){return parseInt(d[yValues[indCurrValue]]);}),
-                d3.min(dataset, function(d) {return d[yValues[indCurrValue]];})])
+            d3.min(dataset, function(d) {return d[yValues[indCurrValue]];})])
         .range([50, height-50]);
     var xAxis = d3.svg.axis()
         .scale(xscale)
@@ -72,27 +57,96 @@ function generateGraph(x_axes, y_axes, data)
     svg.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(0," + (height - 50) + ")")
-        .call(xAxis);
+        .call(xAxis)
+        .append("text")
+        .attr("x", width / 2 + offset)
+        .attr("y", 20)
+        .attr("dy","1em")
+        .style("text-anchor","end")
+        .style("font-size", 16)
+        .style("font-weight", "bold")
+        .text("Year");
     svg.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(" + 50 + ", 0)")
-        .call(yAxis);
+        .call(yAxis)
+        .append("text")
+        .attr("transform","rotate(-90)")
+        .attr("y",-50)
+        .attr("x", -(height / 3) + determineCurrentLabel().length)
+        .attr("dy",".75em")
+        .style("text-anchor","end")
+        .style("text-anchor","end")
+        .style("font-size", 16)
+        .style("font-weight", "bold")
+        .text(determineCurrentLabel());
+
+    // If a mode is switched and a table is displayed, it should be removed
+    d3.select("div")
+        .on("click", function() {
+            if (isDisplayed){
+                table.remove();
+                isDisplayed = false;
+            }
+        });
+
+    var lines = svg.selectAll("line")
+        .data(dataset)
+        .enter()
+        .append("line");
+
+    lines.attr("x1", function(d, i){
+        if (i < dataset.length - 1) {
+            if (dataset[i + 1][yValues[indCurrValue]] != "0" && d[yValues[indCurrValue]] != "0"){
+                return xscale(d.year);
+            }
+        }
+        return xscale(hiddenCoordinate);
+        })
+        .attr("y1", function(d, i){
+            if (i < dataset.length - 1) {
+                if (dataset[i+1][yValues[indCurrValue]] != "0" && d[yValues[indCurrValue]] != "0"){
+                    //lastHeight = d[yValues[indCurrValue]];
+                    return yscale(d[yValues[indCurrValue]]);
+                }
+            }
+            else {
+                return yscale(hiddenCoordinate);
+            }
+        })
+        .attr("x2", function(d, i){
+            if (i < dataset.length - 1) {
+                if (dataset[i+1][yValues[indCurrValue]] != "0" && d[yValues[indCurrValue]] != "0"){
+                    return xscale(dataset[i+1].year);
+                }
+            }
+            return xscale(hiddenCoordinate);
+        })
+        .attr("y2", function(d, i) {
+            if (i < dataset.length - 1) {
+                if (dataset[i + 1][yValues[indCurrValue]] != "0" && d[yValues[indCurrValue]] != "0"){
+                    return yscale(dataset[i+1][yValues[indCurrValue]]);
+                }
+            }
+            return yscale(hiddenCoordinate);
+        });
 
     //add data points
     var circles = svg.selectAll("circle")
         .data(dataset)
         .enter()
         .append("circle");
+
     var lastPoint = new Array();
     circles.attr("cx", function(d, i) {
-            if (d[yValues[indCurrValue]] != "0")
-            {
-                lastPoint.push([d.year, d[yValues[indCurrValue]]]);
-                return xscale(d.year);
-            }
-            lastPoint.push(lastPoint[i - 1]);
-            return xscale(lastPoint[i][0]);
-        })
+        if (d[yValues[indCurrValue]] != "0")
+        {
+            lastPoint.push([d.year, d[yValues[indCurrValue]]]);
+            return xscale(d.year);
+        }
+        lastPoint.push(lastPoint[i - 1]);
+        return xscale(lastPoint[i][0]);
+    })
         .attr("cy", function(d, i){
             if (d[yValues[indCurrValue]] != "0")
             {
@@ -102,140 +156,23 @@ function generateGraph(x_axes, y_axes, data)
         })
         .attr("r", radius)
         .attr("fill", color)
-        .attr("display", function(d) {if (d[yValues[indCurrValue]] != "0") {return "default"} return "none"});
-
-    var lines = svg.selectAll("line")
-        .data(dataset)
-        .enter()
-        .append("line");
-    lines.attr("x1", function(d, i){
-            if (i < dataset.length - 1)
-            {
-                return xscale(d.year);
-            }
-            return xscale(hiddenCoordinate);
-        })
-        .attr("y1", function(d, i){
-            if (i < dataset.length - 1)
-            {
-                lastHeight = d[yValues[indCurrValue]];
-                return yscale(d[yValues[indCurrValue]]);
-            }
-            else
-            {
-                return yscale(hiddenCoordinate);
-            }
-        })
-        .attr("x2", function(d, i){
-            if (i < dataset.length - 1)
-            {
-                return xscale(dataset[i+1].year);
-            }
-            return xscale(hiddenCoordinate);
-        })
-        .attr("y2", function(d, i) {
-            if (i < dataset.length - 1)
-            {
-                return yscale(dataset[i+1][yValues[indCurrValue]]);
-            }
-            return yscale(hiddenCoordinate);
-        })
-        .attr("stroke", color);
-}
-
-function generateSpeedGraph(){
-    var svg = d3.select("body")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height);
-
-    var lines = svg.selectAll("line")
-        .data(dataset)
-        .enter()
-        .append("line");
-
-    d3.select("div")
-        .on("click", function() {
-            if (isDisplayed){
-                table.remove();
-                isDisplayed = false;
-            }
-        });
-
-    lines.attr("x1", function(d, i) {
-        if (i < dataset.length - 1){
-            if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
-                return (i * scaleX) + offset;
-            }
-        }
-        return hiddenCoordinate;
-    })
-        .attr("y1", function(d, i) {
-            if (i < dataset.length - 1){
-                if (d.average_speed != "0" && d.average_speed != "0"){
-                    var y1 = d.average_speed * scaleY;
-                    return height - y1;
-                }
-            }
-            return hiddenCoordinate;
-        })
-        .attr("x2", function(d, i){
-            if (i < dataset.length - 1) {
-                if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
-                    return ((i + 1) * scaleX + offset);
-                }
-            }
-            return hiddenCoordinate;
-        })
-        .attr("y2", function(d, i){
-            if (i < dataset.length - 1) {
-                if (dataset[i + 1].average_speed != "0" && d.average_speed != "0"){
-                    var y2 = dataset[i + 1].average_speed * scaleY;
-                    return height - y2;
-                }
-            }
-            return hiddenCoordinate;
-        })
-        .attr("stroke", color);
-
-
-    var circles = svg.selectAll("circle")
-        .data(dataset)
-        .enter()
-        .append("circle");
-
-    // Only plot points that have data for speed should be visible
-    circles.attr("cx", function(d, i) {
-        return (i * scaleX) + offset;
-        })
-        .attr("cy", function(d) {
-            if (d.average_speed != "0"){
-                var circleHeight = d.average_speed * scaleY;
-                return height - circleHeight;
-            }
-            return hiddenCoordinate;
-        })
-        .attr("r", radius)
-        .attr("fill", function(d) {
-            return color;
-        })
+        .attr("display", function(d) {if (d[yValues[indCurrValue]] != "0") {return "default"} return "none"})
         .on("click", function(d) {
             if (isDisplayed){
                 table.remove();
             }
+            var stats = [
+                {rank: "1st", name: d.first_place, country: d.first_country},
+                {rank: "2nd", name: d.second_place, country: d.second_country},
+                {rank: "3rd", name: d.third_place, country: d.third_country}
+            ];
 
-                var stats = [
-                    {rank: "1st", name: d.first_place, country: d.first_country},
-                    {rank: "2nd", name: d.second_place, country: d.second_country},
-                    {rank: "3rd", name: d.third_place, country: d.third_country}
-                ];
-
-                statsTable = tabulate(stats, ["rank", "name", "country"]);
-                statsTable.selectAll("thead th")
-                    .text(function(column) {
-                        return column.charAt(0).toUpperCase() + column.substr(1);
-                    });
-                isDisplayed = true;
+            statsTable = tabulate(stats, ["rank", "name", "country"]);
+            statsTable.selectAll("thead th")
+                .text(function(column) {
+                    return column.charAt(0).toUpperCase() + column.substr(1);
+                });
+            isDisplayed = true;
 
         })
         .on("mouseover", function() {
@@ -247,14 +184,23 @@ function generateSpeedGraph(){
                 .transition()
                 .duration(300)
                 .attr("fill", color);
+            if (isDisplayed){
+                table.remove();
+            }
         })
         .append("title")
         .text(function(d) {
-            return "Year: " + d.year + "\nAverage Speed: " + d.average_speed + " km/h";
+            if (indCurrValue == 2){
+                text = "\nAverage Speed: " + d.average_speed + " km/h";
+            }
+            else if (indCurrValue == 1){
+                text = "\nDistance: " + d.distance + " km";
+            }
+            else{
+                text = "\nNumber of Stages: " + d.stages;
+            }
+            return "Year: " + d.year + text;
         });
-
-
-
 }
 
 /*
@@ -292,3 +238,61 @@ function tabulate(data, columns) {
         .text(function(d) { return d.value; });
     return table;
 }
+
+/*
+ * Determines what the y-axis label should display.
+ */
+function determineCurrentLabel(){
+    if (indCurrValue == 2){
+        return "Average Speed (km/h)";
+    }
+    else if (indCurrValue == 1){
+        return "Distance (km)";
+    }
+    else{
+        return "Number of Stages";
+    }
+}
+
+/*
+ * Gets the value of whichever button is clicked and changes
+ * the mode accordingly.
+ */
+function changeMode(value){
+    if (value == "Speeds"){
+        indCurrValue = 2;
+    }
+    else if (value == "Distances"){
+        indCurrValue = 1;
+    }
+    else{
+        indCurrValue = 0;
+    }
+    svg.remove();
+    start();
+}
+
+/*
+ * Initializes the visualization.
+ */
+function start(){
+    d3.csv("tour_de_france.csv", function(error, data) {
+        if (error) {
+            console.log(error);
+        }
+        else{
+            console.log(data);  //DEBUG: delete this later...
+            dataset = data;
+            var x_axes = [1900, 2010];
+            var y_axes = [30, 0];
+            var d = [4, 5];
+
+            generateGraph(x_axes, y_axes, d);
+
+        }
+    });
+}
+
+
+
+
