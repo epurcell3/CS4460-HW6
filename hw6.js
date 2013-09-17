@@ -54,32 +54,6 @@ function generateGraph(x_axes, y_axes, data) {
     var yAxis = d3.svg.axis()
         .scale(yscale)
         .orient("left");
-    svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + (height - 50) + ")")
-        .call(xAxis)
-        .append("text")
-        .attr("x", width / 2 + offset)
-        .attr("y", 20)
-        .attr("dy","1em")
-        .style("text-anchor","end")
-        .style("font-size", 16)
-        .style("font-weight", "bold")
-        .text("Year");
-    svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(" + 50 + ", 0)")
-        .call(yAxis)
-        .append("text")
-        .attr("transform","rotate(-90)")
-        .attr("y",-50)
-        .attr("x", -(height / 3) + determineCurrentLabel().length)
-        .attr("dy",".75em")
-        .style("text-anchor","end")
-        .style("text-anchor","end")
-        .style("font-size", 16)
-        .style("font-weight", "bold")
-        .text(determineCurrentLabel());
 
     // If a mode is switched and a table is displayed, it should be removed
     d3.select("div")
@@ -102,7 +76,7 @@ function generateGraph(x_axes, y_axes, data) {
             }
         }
         return xscale(hiddenCoordinate);
-        })
+    })
         .attr("y1", function(d, i){
             if (i < dataset.length - 1) {
                 if (dataset[i+1][yValues[indCurrValue]] != "0" && d[yValues[indCurrValue]] != "0"){
@@ -193,6 +167,34 @@ function generateGraph(x_axes, y_axes, data) {
             return "Year: " + d.year + "\nAverage Speed: " + d.average_speed + " km/h" +
                 "\nDistance: " + d.distance + " km" + "\nNumber of Stages: " + d.stages;
         });
+
+    // add axes
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + (height - 50) + ")")
+        .call(xAxis)
+        .append("text")
+        .attr("x", width / 2 + offset)
+        .attr("y", 20)
+        .attr("dy","1em")
+        .style("text-anchor","end")
+        .style("font-size", 16)
+        .style("font-weight", "bold")
+        .text("Year");
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + 50 + ", 0)")
+        .call(yAxis)
+        .append("text")
+        .attr("transform","rotate(-90)")
+        .attr("y",-50)
+        .attr("x", -(height / 3) + determineCurrentLabel().length)
+        .attr("dy",".75em")
+        .style("text-anchor","end")
+        .style("text-anchor","end")
+        .style("font-size", 16)
+        .style("font-weight", "bold")
+        .text(determineCurrentLabel());
 }
 
 /*
