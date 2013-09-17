@@ -259,14 +259,22 @@ function determineCurrentLabel(){
  * the mode accordingly.
  */
 function changeMode(value){
+    // Make buttons inactive
+    removeClass("left");
+    removeClass("middle");
+    removeClass("right");
+    
     if (value == "Speeds"){
         indCurrValue = 2;
+        document.getElementById("left").className += "active";
     }
     else if (value == "Distances"){
         indCurrValue = 1;
+        document.getElementById("middle").className += "active";
     }
     else{
         indCurrValue = 0;
+        document.getElementById("right").className += "active";
     }
     svg.remove();
     start();
@@ -292,6 +300,16 @@ function start(){
         }
     });
 }
+
+/*
+ * Removes a class from an element.
+ */
+function removeClass(className){
+    document.getElementById(className).className =
+        document.getElementById(className).className.replace
+            ("active", '');
+}
+
 
 
 
