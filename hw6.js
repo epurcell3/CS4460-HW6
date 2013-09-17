@@ -276,7 +276,7 @@ function changeMode(value){
  * Initializes the visualization.
  */
 function start(){
-    d3.csv("tour_de_france.csv", function(error, data) {
+    d3.csv("hw_6.csv", function(error, data) {
         if (error) {
             console.log(error);
         }
