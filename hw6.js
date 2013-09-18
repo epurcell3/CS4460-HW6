@@ -21,6 +21,9 @@ var color = "rgb(19,117,255)";
 var indCurrValue = 2;
 var yValues = ["stages", "distance", "average_speed"];
 
+var line;
+var pointList;
+
 // Flag keeps track of whether or not table is displayed
 var isDisplayed = false;
 
@@ -31,18 +34,15 @@ var svg;
 
 start();
 
-function generateGraph(x_axes, y_axes, data) {
+function generateGraph() {
     svg = d3.select("body")
         .append("svg")
         .attr("width", width)
         .attr("height", height);
 
     var xscale = d3.scale.linear()
-        .domain(x_axes)
+        .domain([1900, 2010])
         .range([50, width-50]);
-    var m = d3.max(dataset, function(d) {
-            return parseInt(d[yValues[indCurrValue]]);
-        });
     var yscale = d3.scale.linear()
         .domain([d3.max(dataset, function(d){return parseInt(d[yValues[indCurrValue]]);}),
             d3.min(dataset, function(d) {return d[yValues[indCurrValue]];})])
@@ -82,7 +82,7 @@ function generateGraph(x_axes, y_axes, data) {
                 return yscale(d[yValues[indCurrValue]]);
             }
             return yscale(pointList[i][1])
-        })
+        });
 
     svg.append("path")
         .datum(dataset)
@@ -107,7 +107,7 @@ function generateGraph(x_axes, y_axes, data) {
                 {
                     return yscale(d[yValues[indCurrValue]]);
                 }
-                return yscale(pointList[i][1])
+                return yscale(pointList[i][1]);
             })
         .attr("r", radius)
         .attr("fill", color)
@@ -170,6 +170,58 @@ function generateGraph(x_axes, y_axes, data) {
         .text(determineCurrentLabel());
 
 
+}
+
+function update() {
+
+    var t0 = svg.transition().duration(500);
+
+    var xscale = d3.scale.linear()
+        .domain([1900, 2010])
+        .range([50, width-50]);
+    var yscale = d3.scale.linear()
+        .domain([d3.max(dataset, function(d){return parseInt(d[yValues[indCurrValue]]);}),
+            d3.min(dataset, function(d) {return d[yValues[indCurrValue]];})])
+        .range([50, height-50]);
+
+    var pointList = new Array();
+
+    var line = d3.svg.line()
+        .interpolate("linear")
+        .x(function(d, i) {
+            if (d[yValues[indCurrValue]] != "0")
+            {
+                pointList.push([d.year, d[yValues[indCurrValue]]]);
+                return xscale(d.year);
+            }
+            pointList.push(pointList[i - 1]);
+            return xscale(pointList[i][0]);
+        })
+        .y(function(d, i) {
+            if (d[yValues[indCurrValue]] != "0")
+            {
+                return yscale(d[yValues[indCurrValue]]);
+            }
+            return yscale(pointList[i][1])
+        });
+
+    t0.selectAll("path").attr("d", line);
+    t0.selectAll("circle")
+        .attr("cx", function(d, i) {
+            if (d[yValues[indCurrValue]] != "0")
+            {
+                return xscale(d.year);
+            }
+            return xscale(pointList[i][0]);
+        })
+        .attr("cy", function(d, i) {
+            if (d[yValues[indCurrValue]] != "0")
+            {
+                return yscale(d[yValues[indCurrValue]]);
+            }
+            return yscale(pointList[i][1]);
+        })
+        .attr("display", function(d) {if (d[yValues[indCurrValue]] != "0") {return "default"} return "none"});
 }
 
 /*
@@ -243,8 +295,8 @@ function changeMode(value){
         indCurrValue = 0;
         document.getElementById("right").className += "active";
     }
-    svg.remove();
-    start();
+    //svg.remove();
+    update();
 }
 
 /*
@@ -258,11 +310,8 @@ function start(){
         else{
             console.log(data);  //DEBUG: delete this later...
             dataset = data;
-            var x_axes = [1900, 2010];
-            var y_axes = [30, 0];
-            var d = [4, 5];
 
-            generateGraph(x_axes, y_axes, d);
+            generateGraph();
 
         }
     });
