@@ -67,7 +67,12 @@ function generateGraph(x_axes, y_axes, data) {
     var lines = svg.selectAll("line")
         .data(dataset)
         .enter()
-        .append("line");
+        .append("line")
+        .transition()
+        .delay(function(d, i) {
+            return i * 100;
+        })
+        .duration(1000);
 
     lines.attr("x1", function(d, i){
         if (i < dataset.length - 1) {
@@ -104,6 +109,35 @@ function generateGraph(x_axes, y_axes, data) {
             }
             return yscale(hiddenCoordinate);
         });
+
+
+    // add axes
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + (height - 50) + ")")
+        .call(xAxis)
+        .append("text")
+        .attr("x", width / 2 + offset)
+        .attr("y", 20)
+        .attr("dy","1em")
+        .style("text-anchor","end")
+        .style("font-size", 16)
+        .style("font-weight", "bold")
+        .text("Year");
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + 50 + ", 0)")
+        .call(yAxis)
+        .append("text")
+        .attr("transform","rotate(-90)")
+        .attr("y",-50)
+        .attr("x", -(height / 3) + determineCurrentLabel().length)
+        .attr("dy",".75em")
+        .style("text-anchor","end")
+        .style("text-anchor","end")
+        .style("font-size", 16)
+        .style("font-weight", "bold")
+        .text(determineCurrentLabel());
 
     //add data points
     var circles = svg.selectAll("circle")
@@ -159,33 +193,7 @@ function generateGraph(x_axes, y_axes, data) {
                 "\nDistance: " + d.distance + " km" + "\nNumber of Stages: " + d.stages;
         });
 
-    // add axes
-    svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + (height - 50) + ")")
-        .call(xAxis)
-        .append("text")
-        .attr("x", width / 2 + offset)
-        .attr("y", 20)
-        .attr("dy","1em")
-        .style("text-anchor","end")
-        .style("font-size", 16)
-        .style("font-weight", "bold")
-        .text("Year");
-    svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(" + 50 + ", 0)")
-        .call(yAxis)
-        .append("text")
-        .attr("transform","rotate(-90)")
-        .attr("y",-50)
-        .attr("x", -(height / 3) + determineCurrentLabel().length)
-        .attr("dy",".75em")
-        .style("text-anchor","end")
-        .style("text-anchor","end")
-        .style("font-size", 16)
-        .style("font-weight", "bold")
-        .text(determineCurrentLabel());
+
 }
 
 /*
@@ -244,11 +252,9 @@ function determineCurrentLabel(){
  * the mode accordingly.
  */
 function changeMode(value){
-    // Make buttons inactive
     removeClass("left");
     removeClass("middle");
     removeClass("right");
-    
     if (value == "Speeds"){
         indCurrValue = 2;
         document.getElementById("left").className += "active";
@@ -292,10 +298,5 @@ function start(){
 function removeClass(className){
     document.getElementById(className).className =
         document.getElementById(className).className.replace
-            ("active", '');
+            ("active" , '');
 }
-
-
-
-
-
