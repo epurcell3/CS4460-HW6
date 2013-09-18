@@ -24,6 +24,10 @@ p {
     position: absolute;
 }
 
+circle:hover {
+    fill: orange;
+}
+
 line {
     stroke: rgb(19,117,255);
     stroke-width: 2px;
@@ -36,10 +40,6 @@ line {
 
 button{
     background-color: #222222;
-    /*border-image: none;
-    border-radius: 0 0 0 0;
-    border-style: none none solid;
-    border-width: 0 0 1px; */
     border-width: 1px;
     border-color: #cccccc;
     color: #ffffff;
@@ -48,7 +48,6 @@ button{
     margin: 0 -3px;
     padding: 6px 10px;
     text-rendering: optimizelegibility;
-    /*text-shadow: 0 -1px 1px #222222; */
 }
 
 .active {
@@ -72,7 +71,7 @@ button:hover {
 div {
     font-family: Helvetica;
     font-size: 14px;
-    color: #692b18;
+    color: #222222;
 }
 
 #table_container {
@@ -84,12 +83,12 @@ div {
 }
 
 table {
-    border-collapse:collapse;
+    border-collapse: collapse;
 }
 
 table, td, th {
     padding: 2px 4px;
-    border: 1px solid #692b18;
+    border: 1px solid #222222;
 }
 
 th {
@@ -100,5 +99,5 @@ th {
 
 td {
     background-color: rgba(255, 208, 96, 0.21);
-    text-align:center;
+    text-align: center;
 }
