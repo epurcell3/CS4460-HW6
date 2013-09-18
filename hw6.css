@@ -33,6 +33,12 @@ line {
     stroke-width: 2px;
 }
 
+.dataline {
+    fill: none;
+    stroke: rgb(19,117,255);
+    stroke-width: 1px;
+}
+
 #buttons {
     left: 1050px;
     position: relative;

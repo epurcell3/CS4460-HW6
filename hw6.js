@@ -32,6 +32,9 @@ var table;
 
 var svg;
 
+var xAxis;
+var yAxis;
+
 start();
 
 function generateGraph() {
@@ -47,11 +50,11 @@ function generateGraph() {
         .domain([d3.max(dataset, function(d){return parseInt(d[yValues[indCurrValue]]);}),
             d3.min(dataset, function(d) {return d[yValues[indCurrValue]];})])
         .range([50, height-50]);
-    var xAxis = d3.svg.axis()
+    xAxis = d3.svg.axis()
         .scale(xscale)
         .orient("bottom")
         .tickFormat(d3.format("f"));
-    var yAxis = d3.svg.axis()
+    yAxis = d3.svg.axis()
         .scale(yscale)
         .orient("left");
 
@@ -86,8 +89,7 @@ function generateGraph() {
 
     svg.append("path")
         .datum(dataset)
-        .attr("stroke", color)
-        .attr("fill", "none")
+        .attr("class", "dataline")
         .attr("d", line);
 
     var points = svg.selectAll("circle")
@@ -155,7 +157,7 @@ function generateGraph() {
         .style("font-weight", "bold")
         .text("Year");
     svg.append("g")
-        .attr("class", "axis")
+        .attr("class", "y axis")
         .attr("transform", "translate(" + 50 + ", 0)")
         .call(yAxis)
         .append("text")
@@ -205,7 +207,7 @@ function update() {
             return yscale(pointList[i][1])
         });
 
-    t0.selectAll("path").attr("d", line);
+    t0.selectAll(".dataline").attr("d", line);
     t0.selectAll("circle")
         .attr("cx", function(d, i) {
             if (d[yValues[indCurrValue]] != "0")
@@ -222,6 +224,10 @@ function update() {
             return yscale(pointList[i][1]);
         })
         .attr("display", function(d) {if (d[yValues[indCurrValue]] != "0") {return "default"} return "none"});
+    var yAxis = d3.svg.axis()
+        .scale(yscale)
+        .orient("left");
+    t0.selectAll(".y.axis").call(yAxis);
 }
 
 /*
