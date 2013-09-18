@@ -141,54 +141,6 @@ function generateGraph(x_axes, y_axes, data) {
         });
 
 
-
-//    var lines = svg.selectAll("line")
-//        .data(dataset)
-//        .enter()
-//        .append("line")
-//        .transition()
-//        .delay(function(d, i) {
-//            return i * 100;
-//        })
-//        .duration(1000);
-//
-//    lines.attr("x1", function(d, i){
-//        if (i < dataset.length - 1) {
-//            if (dataset[i + 1][yValues[indCurrValue]] != "0" && d[yValues[indCurrValue]] != "0"){
-//                return xscale(d.year);
-//            }
-//        }
-//        return xscale(hiddenCoordinate);
-//    })
-//        .attr("y1", function(d, i){
-//            if (i < dataset.length - 1) {
-//                if (dataset[i+1][yValues[indCurrValue]] != "0" && d[yValues[indCurrValue]] != "0"){
-//                    //lastHeight = d[yValues[indCurrValue]];
-//                    return yscale(d[yValues[indCurrValue]]);
-//                }
-//            }
-//            else {
-//                return yscale(hiddenCoordinate);
-//            }
-//        })
-//        .attr("x2", function(d, i){
-//            if (i < dataset.length - 1) {
-//                if (dataset[i+1][yValues[indCurrValue]] != "0" && d[yValues[indCurrValue]] != "0"){
-//                    return xscale(dataset[i+1].year);
-//                }
-//            }
-//            return xscale(hiddenCoordinate);
-//        })
-//        .attr("y2", function(d, i) {
-//            if (i < dataset.length - 1) {
-//                if (dataset[i + 1][yValues[indCurrValue]] != "0" && d[yValues[indCurrValue]] != "0"){
-//                    return yscale(dataset[i+1][yValues[indCurrValue]]);
-//                }
-//            }
-//            return yscale(hiddenCoordinate);
-//        });
-
-
     // add axes
     svg.append("g")
         .attr("class", "axis")
@@ -216,60 +168,6 @@ function generateGraph(x_axes, y_axes, data) {
         .style("font-size", 16)
         .style("font-weight", "bold")
         .text(determineCurrentLabel());
-
-    //add data points
-//    var circles = svg.selectAll("circle")
-//        .data(dataset)
-//        .enter()
-//        .append("circle");
-//
-//    var lastPoint = new Array();
-//    circles.attr("cx", function(d, i) {
-//        if (d[yValues[indCurrValue]] != "0")
-//        {
-//            lastPoint.push([d.year, d[yValues[indCurrValue]]]);
-//            return xscale(d.year);
-//        }
-//        lastPoint.push(lastPoint[i - 1]);
-//        return xscale(lastPoint[i][0]);
-//    })
-//        .attr("cy", function(d, i){
-//            if (d[yValues[indCurrValue]] != "0")
-//            {
-//                return yscale(d[yValues[indCurrValue]]);
-//            }
-//            return yscale(lastPoint[i][1]);
-//        })
-//        .attr("r", radius)
-//        .attr("fill", color)
-//        .attr("display", function(d) {if (d[yValues[indCurrValue]] != "0") {return "default"} return "none"})
-//        .on("click", function(d) {
-//            d3.selectAll("circle")
-//                .attr("fill", color);
-//            d3.select(this)
-//                .attr("fill", "orange");
-//            if (isDisplayed){
-//                table.remove();
-//            }
-//            var stats = [
-//                {rank: "1st", name: d.first_place, country: d.first_country},
-//                {rank: "2nd", name: d.second_place, country: d.second_country},
-//                {rank: "3rd", name: d.third_place, country: d.third_country}
-//            ];
-//
-//            statsTable = tabulate(stats, ["rank", "name", "country"]);
-//            statsTable.selectAll("thead th")
-//                .text(function(column) {
-//                    return column.charAt(0).toUpperCase() + column.substr(1);
-//                });
-//            isDisplayed = true;
-//
-//        })
-//        .append("title")
-//        .text(function(d) {
-//            return "Year: " + d.year + "\nAverage Speed: " + d.average_speed + " km/h" +
-//                "\nDistance: " + d.distance + " km" + "\nNumber of Stages: " + d.stages;
-//        });
 
 
 }
