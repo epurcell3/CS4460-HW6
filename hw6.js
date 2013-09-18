@@ -55,8 +55,8 @@ function generateGraph(x_axes, y_axes, data) {
         .scale(yscale)
         .orient("left");
 
-    // If a mode is switched and a table is displayed, it should be removed
-    d3.select("div")
+    // If a mode is switched and a table is displayed, the table should be removed
+    d3.select("span")
         .on("click", function() {
             if (isDisplayed){
                 table.remove();
@@ -132,6 +132,10 @@ function generateGraph(x_axes, y_axes, data) {
         .attr("fill", color)
         .attr("display", function(d) {if (d[yValues[indCurrValue]] != "0") {return "default"} return "none"})
         .on("click", function(d) {
+            d3.selectAll("circle")
+                .attr("fill", color);
+            d3.select(this)
+                .attr("fill", "orange");
             if (isDisplayed){
                 table.remove();
             }
@@ -148,19 +152,6 @@ function generateGraph(x_axes, y_axes, data) {
                 });
             isDisplayed = true;
 
-        })
-        .on("mouseover", function() {
-            d3.select(this)
-                .attr("fill", "orange");
-        })
-        .on("mouseout", function(d) {
-            d3.select(this)
-                .transition()
-                .duration(300)
-                .attr("fill", color);
-            if (isDisplayed){
-                table.remove();
-            }
         })
         .append("title")
         .text(function(d) {
